@@ -46,9 +46,6 @@ function buildToolFilters() {
   DATA.forEach(e => { if (!seen.includes(e.slug)) seen.push(e.slug); });
   seen.sort((a, b) => String(a).localeCompare(String(b), 'ar'));
   const bar = document.getElementById('toolFilters');
-  const all = document.createElement('button');
-  all.className = 'chip active'; all.dataset.filter = 'tool'; all.dataset.value = 'all'; all.textContent = 'الكل';
-  bar.appendChild(all);
   seen.forEach(slug => {
     const name = (DATA.find(e => e.slug === slug) || {}).tool || slug;
     const b = document.createElement('button');
