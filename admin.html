@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم نبض</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0b08; --panel:#161309; --panel2:#12100c;
+  --line:rgba(232,163,61,.16); --line-soft:rgba(255,255,255,.06);
+  --ink:#e9e4d6; --muted:#8f8875; --dim:#5c5646;
+  --amber:#e8a33d; --add:#5fae6e; --del:#c2645a; --blue:#6b9bd1;
+  --r:8px;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans Arabic',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding:20px}
+code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:900px;margin:0 auto}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap;gap:12px}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--amber)}
+.header a{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.header a:hover{color:var(--amber)}
+
+/* Buttons */
+.btn{font-family:var(--mono);font-size:.82rem;padding:9px 18px;border-radius:var(--r);border:1px solid var(--line-soft);background:var(--panel);color:var(--ink);cursor:pointer;transition:.2s;font-weight:600}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn-primary{background:var(--amber);color:#1a1002;border-color:var(--amber)}
+.btn-primary:hover{background:#f0b254;color:#1a1002}
+.btn-danger{color:var(--del);border-color:rgba(194,100,90,.3)}
+.btn-danger:hover{background:var(--del);color:#fff}
+.btn-success{color:var(--add);border-color:rgba(95,174,110,.3)}
+.btn-success:hover{background:var(--add);color:#fff}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:14px}
+.stat b{font-family:var(--mono);font-size:1.5rem;color:var(--amber);display:block}
+.stat span{font-size:.75rem;color:var(--muted)}
+
+/* Form */
+.form-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:24px}
+.form-card h2{font-size:1.1rem;margin-bottom:16px;color:var(--amber)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.form-group label{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.form-group input,.form-group select,.form-group textarea{background:var(--panel2);border:1px solid var(--line-soft);border-radius:var(--r);padding:10px 12px;color:var(--ink);font-family:var(--sans);font-size:.9rem;outline:none;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--amber)}
+.form-group textarea{min-height:80px;resize:vertical;font-family:var(--mono);font-size:.85rem}
+.form-group .hint{font-size:.7rem;color:var(--dim)}
+.checkbox-row{display:flex;align-items:center;gap:8px}
+.checkbox-row input[type="checkbox"]{width:18px;height:18px;accent-color:var(--amber)}
+
+/* Entries list */
+.entries-list{display:flex;flex-direction:column;gap:10px}
+.entry-item{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.entry-info{flex:1;min-width:200px}
+.entry-info h3{font-size:.95rem;margin-bottom:4px}
+.entry-meta{font-family:var(--mono);font-size:.72rem;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.entry-meta .tag{padding:2px 8px;border-radius:99px;border:1px solid var(--line-soft)}
+.entry-actions{display:flex;gap:6px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:50%;transform:translateX(50%) translateY(100px);background:var(--add);color:#0a1f0b;padding:12px 24px;border-radius:var(--r);font-family:var(--mono);font-size:.85rem;font-weight:700;opacity:0;transition:.3s;z-index:100}
+.toast.show{opacity:1;transform:translateX(50%) translateY(0)}
+.toast.error{background:var(--del);color:#fff}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}
+.modal-content{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-content h3{margin-bottom:16px;color:var(--amber)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr}
+  .entry-item{flex-direction:column;align-items:flex-start}
+  .entry-actions{width:100%}
+  .entry-actions button{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>⚡ لوحة تحكم <span>نبض</span></h1>
+    <a href="/" target="_blank">← زيارة الموقع</a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="statTotal">0</b><span>إجمالي المنشورات</span></div>
+    <div class="stat"><b id="statTools">0</b><span>أداة مختلفة</span></div>
+    <div class="stat"><b id="statVerified">0</b><span>مُتحقَّق منها</span></div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="openForm()"> + إضافة منشور جديد</button>
+    <button class="btn btn-success" onclick="exportJSON()">📥 تصدير JSON</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">📤 استيراد JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+  </div>
+
+  <div class="modal" id="formModal">
+    <div class="modal-content">
+      <h3 id="formTitle">إضافة منشور جديد</h3>
+      <form id="entryForm">
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <div class="form-group">
+            <label>المعرّف (ID)</label>
+            <input type="text" id="f_id" placeholder="مثال: or-2026-08-new" required>
+            <span class="hint">باللغة الإنجليزية فقط، بدون مسافات</span>
+          </div>
+          <div class="form-group">
+            <label>الأداة (Tool)</label>
+            <input type="text" id="f_tool" list="toolsList" placeholder="OpenRouter" required>
+            <datalist id="toolsList"></datalist>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Slug</label>
+            <input type="text" id="f_slug" placeholder="openrouter" required>
+          </div>
+          <div class="form-group">
+            <label>النوع</label>
+            <select id="f_type" required>
+              <option value="release">إصدار</option>
+              <option value="pricing">تسعير</option>
+              <option value="breaking">تغيير جذري</option>
+              <option value="funding">تمويل</option>
+              <option value="milestone">محطة</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>التاريخ</label>
+          <input type="date" id="f_date" required>
+        </div>
+        <div class="form-group">
+          <label>العنوان</label>
+          <input type="text" id="f_title" placeholder="عنوان التحديث" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>قبل (diff_before)</label>
+            <textarea id="f_before" placeholder="الحالة السابقة..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>بعد (diff_after)</label>
+            <textarea id="f_after" placeholder="الحالة الجديدة..."></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>الوصف (Body)</label>
+          <textarea id="f_body" placeholder="وصف مفصل للتحديث..." style="min-height:100px" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم المصدر</label>
+            <input type="text" id="f_source_name" placeholder="example.com" required>
+          </div>
+          <div class="form-group">
+            <label>رابط المصدر</label>
+            <input type="url" id="f_source_url" placeholder="https://..." required>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="f_verified" checked>
+            <label for="f_verified" style="font-family:var(--sans);font-size:.9rem;color:var(--ink);cursor:pointer">✓ مُتحقَّق يدوياً</label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeForm()">إلغاء</button>
+          <button type="submit" class="btn btn-primary">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.1rem;margin-bottom:14px;color:var(--amber)">📋 المنشورات الحالية</h2>
+  <div class="entries-list" id="entriesList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let entries = [];
+
+async function loadEntries() {
+  try {
+    const res = await fetch('data/updates.json');
+    if (!res.ok) throw new Error('فشل التحميل');
+    entries = await res.json();
+    entries = entries.map(e => {
+      const clean = {};
+      Object.keys(e).forEach(k => clean[k.trim()] = typeof e[k] === 'string' ? e[k].trim() : e[k]);
+      return clean;
+    });
+    render();
+  } catch (err) {
+    entries = [];
+    render();
+    showToast(' لم يتم العثور على بيانات — ابدأ بإضافة منشور', 'error');
+  }
+}
+
+function render() {
+  document.getElementById('statTotal').textContent = entries.length;
+  const tools = new Set(entries.map(e => e.tool));
+  document.getElementById('statTools').textContent = tools.size;
+  document.getElementById('statVerified').textContent = entries.filter(e => e.verified).length;
+
+  const dl = document.getElementById('toolsList');
+  dl.innerHTML = [...tools].map(t => `<option value="${t}">`).join('');
+
+  const list = document.getElementById('entriesList');
+  if (entries.length === 0) {
+    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;font-family:var(--mono)">لا توجد منشورات بعد. اضغط "إضافة منشور جديد" للبدء.</p>';
+    return;
+  }
+  list.innerHTML = entries.map((e, i) => `
+    <div class="entry-item">
+      <div class="entry-info">
+        <h3>${escapeHtml(e.title)}</h3>
+        <div class="entry-meta">
+          <span class="tag">${escapeHtml(e.tool)}</span>
+          <span class="tag">${e.type}</span>
+          <span>${e.date}</span>
+          ${e.verified ? '<span style="color:var(--add)">✓</span>' : ''}
+        </div>
+      </div>
+      <div class="entry-actions">
+        <button class="btn" onclick="editEntry(${i})">✏️ تعديل</button>
+        <button class="btn btn-danger" onclick="deleteEntry(${i})">🗑 حذف</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openForm(entry = null) {
+  document.getElementById('formTitle').textContent = entry ? 'تعديل منشور' : 'إضافة منشور جديد';
+  document.getElementById('editId').value = entry ? entries.indexOf(entry) : '';
+  document.getElementById('f_id').value = entry?.id || '';
+  document.getElementById('f_tool').value = entry?.tool || '';
+  document.getElementById('f_slug').value = entry?.slug || '';
+  document.getElementById('f_type').value = entry?.type || 'release';
+  document.getElementById('f_date').value = entry?.date || new Date().toISOString().split('T')[0];
+  document.getElementById('f_title').value = entry?.title || '';
+  document.getElementById('f_before').value = entry?.diff_before || '';
+  document.getElementById('f_after').value = entry?.diff_after || '';
+  document.getElementById('f_body').value = entry?.body || '';
+  document.getElementById('f_source_name').value = entry?.source_name || '';
+  document.getElementById('f_source_url').value = entry?.source_url || '';
+  document.getElementById('f_verified').checked = entry?.verified ?? true;
+  document.getElementById('formModal').classList.add('show');
+}
+
+function closeForm() {
+  document.getElementById('formModal').classList.remove('show');
+  document.getElementById('entryForm').reset();
+}
+
+document.getElementById('entryForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const editIdx = document.getElementById('editId').value;
+  const entry = {
+    id: document.getElementById('f_id').value.trim(),
+    tool: document.getElementById('f_tool').value.trim(),
+    slug: document.getElementById('f_slug').value.trim(),
+    type: document.getElementById('f_type').value,
+    date: document.getElementById('f_date').value,
+    title: document.getElementById('f_title').value.trim(),
+    diff_before: document.getElementById('f_before').value.trim(),
+    diff_after: document.getElementById('f_after').value.trim(),
+    body: document.getElementById('f_body').value.trim(),
+    source_name: document.getElementById('f_source_name').value.trim(),
+    source_url: document.getElementById('f_source_url').value.trim(),
+    verified: document.getElementById('f_verified').checked
+  };
+
+  if (editIdx !== '') {
+    entries[parseInt(editIdx)] = entry;
+    showToast('✅ تم تعديل المنشور');
+  } else {
+    entries.unshift(entry);
+    showToast('✅ تم إضافة المنشور');
+  }
+
+  closeForm();
+  render();
+  autoSave();
+});
+
+function editEntry(i) { openForm(entries[i]); }
+
+function deleteEntry(i) {
+  if (!confirm(`هل أنت متأكد من حذف: "${entries[i].title}"؟`)) return;
+  entries.splice(i, 1);
+  render();
+  autoSave();
+  showToast('🗑 تم الحذف');
+}
+
+function autoSave() {
+  localStorage.setItem('nabd_draft', JSON.stringify(entries, null, 2));
+}
+
+function exportJSON() {
+  if (entries.length === 0) { showToast('⚠ لا توجد بيانات للتصدير', 'error'); return; }
+  const json = JSON.stringify(entries, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'updates.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 تم تنزيل updates.json — ارفعه على GitHub في مجلد data/');
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('الملف يجب أن يكون مصفوفة');
+      if (confirm(`استيراد ${data.length} منشور؟ (سيتم استبدال البيانات الحالية)`)) {
+        entries = data;
+        render();
+        autoSave();
+        showToast('✅ تم الاستيراد بنجاح');
+      }
+    } catch (err) { showToast('❌ ملف JSON غير صالح', 'error'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.getElementById('formModal').addEventListener('click', e => {
+  if (e.target.id === 'formModal') closeForm();
+});
+
+loadEntries();
+</script>
+</body>
+</html>
