@@ -92,6 +92,7 @@ function render() {
 function entry(e) {
   const [abbr, bg] = logos[e.slug] || [String(e.tool).slice(0, 2).toUpperCase(), '#e8a33d'];
   const t = arTypes[e.type] || e.type;
+  const safeUrl = (e.source_url && e.source_url.startsWith('https://')) ? e.source_url : '#';
   return `<article class="entry" data-tool="${esc(e.slug)}" data-type="${esc(e.type)}">
     <div class="entry-head">
       <div class="entry-logo" style="background:${bg}">${esc(abbr)}</div>
@@ -104,7 +105,7 @@ function entry(e) {
       <div class="diff-item"><span class="diff-label">بعد</span><span class="diff-value">${esc(e.diff_after)}</span></div>
     </div>
     <p class="entry-body">${esc(e.body)}</p>
-    <div class="entry-source">المصدر: <a href="${esc(e.source_url)}" target="_blank" rel="noopener">${esc(e.source_name)}</a> <span class="verified">✓ مُتحقَّق</span></div>
+    <div class="entry-source">المصدر: <a href="${esc(safeUrl)}" target="_blank" rel="noopener">${esc(e.source_name)}</a> <span class="verified">✓ مُتحقَّق</span></div>
   </article>`;
 }
 
