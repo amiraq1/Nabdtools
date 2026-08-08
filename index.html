@@ -3,165 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نبض — عروض أدوات الذكاء الاصطناعي الموثّقة</title>
-<meta name="description" content="نبض: عروض موثّقة ومُتحقَّق منها لأدوات الذكاء الاصطناعي: OpenRouter، OpenCode، Cursor، Claude، وغيرها. كل عرض بمصدره وتاريخه.">
+<title>نبض — تتبّع تغيّرات أدوات الذكاء الاصطناعي</title>
+<meta name="description" content="سجلّ يدوي موثّق لتغيّرات أسعار وإصدارات أدوات الذكاء الاصطناعي مثل OpenRouter و OpenCode.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0c0b08; --bg2:#100e0a; --panel:#161309; --panel2:#12100c;
-  --line:rgba(232,163,61,.16); --line-soft:rgba(255,255,255,.06);
-  --ink:#e9e4d6; --muted:#8f8875; --dim:#5c5646;
-  --amber:#e8a33d; --amber-soft:rgba(232,163,61,.12);
-  --add:#5fae6e; --add-bg:rgba(95,174,110,.1);
-  --del:#c2645a; --del-bg:rgba(194,100,90,.1);
-  --blue:#6b9bd1;
-  --r:8px;
-  --mono:'IBM Plex Mono',monospace;
-  --arsans:'IBM Plex Sans Arabic',sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--arsans);line-height:1.75;-webkit-font-smoothing:antialiased}
-code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-img{display:block;max-width:100%}
-.wrap{width:min(1100px,92%);margin-inline:auto}
-section{padding:70px 0}
-
-/* ===== الترويسة ===== */
-.topbar{position:sticky;top:0;z-index:20;background:rgba(12,11,8,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-mark{font-family:var(--mono);color:var(--amber);font-weight:700;font-size:1.1rem;background:var(--amber-soft);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
-.brand-text b{display:block;font-size:.98rem}
-.brand-text small{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;color:var(--muted)}
-.topbar-meta{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--add);box-shadow:0 0 0 0 rgba(95,174,110,.5);animation:pulse 2s infinite;display:inline-block}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(95,174,110,.45)}50%{box-shadow:0 0 0 5px rgba(95,174,110,0)}}
-
-/* ===== المقدمة ===== */
-.intro{padding:56px 0 32px}
-.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--amber);margin-bottom:14px;direction:rtl;display:inline-flex;align-items:center;gap:8px}
-.eyebrow::before{content:"◆";font-size:.6rem}
-.intro h1{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:700;line-height:1.5;margin-bottom:14px}
-.intro h1 .hl{color:var(--amber)}
-.lede{color:var(--muted);font-size:1rem;max-width:60ch;margin-bottom:24px}
-.lede code{background:var(--panel2);border:1px solid var(--line-soft);border-radius:5px;padding:1px 7px;color:var(--amber);font-size:.85em}
-
-/* إحصائيات */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
-.stat{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 18px}
-.stat b{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--amber);display:block;line-height:1.1}
-.stat span{font-size:.78rem;color:var(--muted);display:block;margin-top:4px}
-
-/* ===== الفلاتر ===== */
-.filters-bar{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line-soft);margin-bottom:30px}
-.chip{font-family:var(--mono);font-size:.76rem;padding:7px 14px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted);transition:.2s;white-space:nowrap}
-.chip:hover{color:var(--ink);border-color:var(--line)}
-.chip.active{background:var(--amber);color:#1a1002;border-color:var(--amber);font-weight:600}
-
-/* ===== بطاقات العروض ===== */
-.offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
-.offer{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:22px;transition:.3s;position:relative;overflow:hidden;animation:offerIn .5s ease both}
-@keyframes offerIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.offer:hover{border-color:rgba(232,163,61,.45);transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.4)}
-.offer.hide{display:none}
-.offer-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.tool-logo{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:.85rem;color:#1a1002;flex-shrink:0}
-.tool-info h3{font-size:1.02rem;font-weight:700;line-height:1.3;margin-bottom:2px}
-.tool-info small{font-family:var(--mono);font-size:.68rem;color:var(--dim)}
-.offer-type{margin-inline-start:auto;font-family:var(--mono);font-size:.66rem;padding:3px 10px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted)}
-.offer-type.discount{color:var(--add);border-color:rgba(95,174,110,.35)}
-.offer-type.free{color:var(--blue);border-color:rgba(107,155,209,.35)}
-.offer-type.limited{color:var(--amber);border-color:rgba(232,163,61,.35)}
-.offer-body{color:#c8c2b0;font-size:.88rem;margin-bottom:16px;min-height:60px}
-.offer-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
-.price-new{font-family:var(--mono);font-weight:700;font-size:1.4rem;color:var(--amber)}
-.price-old{font-family:var(--mono);color:var(--dim);text-decoration:line-through;font-size:.88rem}
-.price-save{font-family:var(--mono);font-size:.72rem;color:var(--add);background:var(--add-bg);padding:2px 8px;border-radius:99px;margin-inline-start:auto}
-.offer-code{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px dashed rgba(232,163,61,.4);border-radius:var(--r);padding:10px 14px;margin-bottom:12px}
-.offer-code .code{font-family:var(--mono);font-weight:700;letter-spacing:.1em;color:var(--amber);flex:1;font-size:.92rem}
-.copy-btn{background:var(--amber);color:#1a1002;border-radius:6px;padding:6px 14px;font-size:.76rem;font-weight:700;font-family:var(--mono);transition:.2s}
-.copy-btn:hover{background:#f0b254;transform:translateY(-1px)}
-.offer-foot{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:.7rem;color:var(--dim);padding-top:12px;border-top:1px solid var(--line-soft)}
-.offer-foot a{color:var(--amber);border-bottom:1px dashed rgba(232,163,61,.4)}
-.offer-foot a:hover{border-bottom-style:solid}
-.verified{color:var(--add);display:inline-flex;align-items:center;gap:4px}
-
-/* ===== قسم الأدوات المميزة ===== */
-.tools-section{background:var(--bg2);border-block:1px solid var(--line-soft)}
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:30px}
-.tool-card{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:20px;transition:.3s;cursor:pointer}
-.tool-card:hover{border-color:rgba(232,163,61,.45);transform:translateY(-3px)}
-.tool-card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.tool-card h3{font-size:1rem;font-weight:700}
-.tool-card p{color:var(--muted);font-size:.82rem;margin-bottom:12px;min-height:40px}
-.tool-card .count{font-family:var(--mono);font-size:.72rem;color:var(--amber)}
-
-/* ===== سجل التغييرات ===== */
-.changelog{padding-top:0}
-.changelog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.changelog-head h2{font-size:1.3rem;font-weight:700}
-.changelog-head a{font-family:var(--mono);font-size:.78rem;color:var(--amber);border-bottom:1px dashed rgba(232,163,61,.4)}
-.changelog-list{display:flex;flex-direction:column;gap:0;position:relative}
-.changelog-list::before{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:5px;width:1px;background:linear-gradient(var(--line),var(--line) 70%,transparent)}
-.cl-entry{position:relative;padding:0 0 22px 0;padding-inline-start:30px}
-.cl-entry::before{content:"";position:absolute;inset-inline-start:0;top:6px;width:11px;height:11px;border-radius:50%;background:var(--panel);border:2px solid var(--amber)}
-.cl-entry-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
-.cl-entry-date{font-family:var(--mono);font-size:.7rem;color:var(--dim)}
-.cl-entry-tool{font-family:var(--mono);font-size:.68rem;font-weight:600;padding:2px 10px;border-radius:5px;background:var(--panel2);border:1px solid var(--line-soft)}
-.cl-entry-type{font-family:var(--mono);font-size:.66rem;padding:2px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted)}
-.cl-entry-type.pricing{color:var(--amber);border-color:rgba(232,163,61,.35)}
-.cl-entry-type.release{color:var(--blue);border-color:rgba(107,155,209,.35)}
-.cl-entry h4{font-size:.94rem;font-weight:700;margin-bottom:6px;line-height:1.5}
-.cl-entry p{color:#c8c2b0;font-size:.84rem;margin-bottom:8px;max-width:60ch}
-.cl-entry-source{font-family:var(--mono);font-size:.7rem;color:var(--dim)}
-.cl-entry-source a{color:var(--amber);border-bottom:1px dashed rgba(232,163,61,.4)}
-
-/* ===== النشرة البريدية ===== */
-.newsletter{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:36px 32px;display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center}
-.newsletter h3{font-size:1.3rem;font-weight:700;margin-bottom:8px}
-.newsletter p{color:var(--muted);font-size:.9rem}
-.news-form{display:flex;gap:10px}
-.news-form input{flex:1;background:var(--panel2);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px 16px;color:var(--ink);font-family:inherit;font-size:.9rem;outline:none;transition:border-color .25s}
-.news-form input:focus{border-color:var(--amber)}
-.news-form button{background:var(--amber);color:#1a1002;border-radius:var(--r);padding:12px 24px;font-weight:700;font-size:.9rem;transition:.2s}
-.news-form button:hover{background:#f0b254;transform:translateY(-1px)}
-.news-ok{display:none;background:var(--add-bg);border:1px solid rgba(95,174,110,.4);color:var(--add);border-radius:var(--r);padding:14px 18px;font-weight:700;font-size:.88rem}
-
-/* ===== التذييل ===== */
-.site-footer{border-top:1px solid var(--line-soft);padding:28px 0;margin-top:20px}
-.footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.78rem;color:var(--dim)}
-
-/* ===== التنبيه ===== */
-.toast{position:fixed;bottom:26px;right:50%;transform:translate(50%,80px);background:var(--add);color:#0a1f0b;font-weight:700;padding:13px 26px;border-radius:var(--r);box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;transition:.4s cubic-bezier(.2,.7,.3,1.2);z-index:100;font-size:.88rem;font-family:var(--mono)}
-.toast.show{transform:translate(50%,0);opacity:1}
-
-/* ===== استجابة ===== */
-@media(max-width:760px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .newsletter{grid-template-columns:1fr;padding:28px 22px}
-  .news-form{flex-direction:column}
-  section{padding:50px 0}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="top">
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a class="brand" href="#">
+    <a class="brand" href="#top">
       <span class="brand-mark">⚡</span>
-      <span class="brand-text"><b>نبض</b><small>NABD · AI DEALS</small></span>
+      <span class="brand-text"><b>نبض</b><small>NABD · AI TOOLS CHANGELOG</small></span>
     </a>
     <div class="topbar-meta">
-      <span class="live-dot"></span>
-      <span id="lastUpdate">آخر تحديث: الأحد 9 أغسطس 2026</span>
+      <span class="live-dot" aria-hidden="true"></span>
+      <span id="lastSync">آخر مزامنة: —</span>
     </div>
   </div>
 </header>
@@ -169,301 +28,35 @@ section{padding:70px 0}
 <main class="wrap">
 
   <section class="intro">
-    <span class="eyebrow">عروض موثّقة · كل عرض بمصدره وتاريخه</span>
-    <h1>عروض <span class="hl">أدوات الذكاء الاصطناعي</span> التي تستحق الاقتناء</h1>
-    <p class="lede">لا خصومات وهمية ولا عدّادات مزيّفة. نتابع عروض أدوات مثل <code>OpenRouter</code> و<code>OpenCode</code> و<code>Cursor</code> و<code>Claude</code> وغيرها — كل عرض مُتحقَّق منه ومؤرَّخ بمصدره الرسمي.</p>
-    
-    <div class="stats">
-      <div class="stat"><b>8</b><span>عروض نشطة</span></div>
-      <div class="stat"><b>8</b><span>أدوات AI</span></div>
-      <div class="stat"><b>40%</b><span>متوسط التوفير</span></div>
-      <div class="stat"><b>✓</b><span>كلها مُتحقَّق منها</span></div>
+    <p class="eyebrow">سجلّ يدوي مُوثَّق · لكل سطر مصدره وتاريخه</p>
+    <h1>ماذا تغيّر فعلاً في أدوات الذكاء الاصطناعي؟</h1>
+    <p class="lede">لا خصومات وهمية ولا عدّادات مزيّفة. كل سطر هنا مُتحقَّق من مصدره ومؤرَّخ. نتابع تغيّرات الأسعار، الإصدارات، والأعطال المهمة في أدوات مثل <code>OpenRouter</code> و<code>OpenCode</code> وغيرها.</p>
+  </section>
+
+  <section class="filters-bar" aria-label="فلاتر السجل">
+    <div class="filter-group" id="toolFilters">
+      <button class="chip active" data-filter="tool" data-value="all">الكل</button>
+    </div>
+    <div class="filter-group" id="typeFilters">
+      <button class="chip chip-outline active" data-filter="type" data-value="all">كل الأنواع</button>
+      <button class="chip chip-outline" data-filter="type" data-value="pricing">تسعير</button>
+      <button class="chip chip-outline" data-filter="type" data-value="release">إصدار</button>
+      <button class="chip chip-outline" data-filter="type" data-value="breaking">تغيير جذري</button>
+      <button class="chip chip-outline" data-filter="type" data-value="funding">تمويل</button>
+      <button class="chip chip-outline" data-filter="type" data-value="milestone">محطة</button>
     </div>
   </section>
 
-  <section>
-    <div class="filters-bar" id="filters">
-      <button class="chip active" data-filter="all">الكل</button>
-      <button class="chip" data-filter="openrouter">OpenRouter</button>
-      <button class="chip" data-filter="opencode">OpenCode</button>
-      <button class="chip" data-filter="cursor">Cursor</button>
-      <button class="chip" data-filter="claude">Claude</button>
-      <button class="chip" data-filter="midjourney">Midjourney</button>
-      <button class="chip" data-filter="perplexity">Perplexity</button>
-      <button class="chip" data-filter="copilot">GitHub Copilot</button>
-      <button class="chip" data-filter="windsurf">Windsurf</button>
-    </div>
-
-    <div class="offers-grid" id="offersGrid">
-
-      <article class="offer" data-tool="openrouter">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#e8a33d">OR</div>
-          <div class="tool-info"><h3>OpenRouter</h3><small>منصة موحدة لـ 400+ نموذج AI</small></div>
-          <span class="offer-type discount">خصم</span>
-        </div>
-        <p class="offer-body">رصيد مجاني بقيمة $5 عند التسجيل لأول مرة — استخدم أكثر من 400 نموذج بدون التزام شهري.</p>
-        <div class="offer-prices">
-          <span class="price-new">$5 مجاناً</span>
-          <span class="price-save">وفّر $5</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">WELCOME5</span>
-          <button class="copy-btn" data-code="WELCOME5">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 31 أغسطس 2026</span>
-          <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="opencode">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#5fae6e">OC</div>
-          <div class="tool-info"><h3>OpenCode</h3><small>محرر كود AI مفتوح المصدر</small></div>
-          <span class="offer-type free">مجاني</span>
-        </div>
-        <p class="offer-body">أداة برمجة مفتوحة المصدر بترخيص MIT — تدعم 75+ مزوّد نموذج عبر ملف إعداد واحد.</p>
-        <div class="offer-prices">
-          <span class="price-new">مجاني بالكامل</span>
-          <span class="price-save">مفتوح المصدر</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">MIT LICENSE</span>
-          <button class="copy-btn" data-code="https://github.com/sst/opencode">رابط GitHub</button>
-        </div>
-        <div class="offer-foot">
-          <span>دائم</span>
-          <a href="https://github.com/sst/opencode" target="_blank" rel="noopener">github.com/sst/opencode ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="cursor">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#6b9bd1">CU</div>
-          <div class="tool-info"><h3>Cursor</h3><small>محرر كود AI متقدم</small></div>
-          <span class="offer-type discount">خصم</span>
-        </div>
-        <p class="offer-body">اشتراك Pro السنوي بخصم 20% — مساعد برمجة AI متقدم مع Tab Completion و Chat.</p>
-        <div class="offer-prices">
-          <span class="price-new">$192/سنة</span>
-          <span class="price-old">$240</span>
-          <span class="price-save">وفّر $48</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">CURSOR20</span>
-          <button class="copy-btn" data-code="CURSOR20">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 15 أغسطس 2026</span>
-          <a href="https://cursor.com" target="_blank" rel="noopener">cursor.com ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="claude">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#c2645a">CL</div>
-          <div class="tool-info"><h3>Claude Pro</h3><small>مساعد AI من Anthropic</small></div>
-          <span class="offer-type limited">محدود</span>
-        </div>
-        <p class="offer-body">شهر مجاني من Claude Pro عند الاشتراك السنوي — وصول مبكر لـ Claude Opus 4.7.</p>
-        <div class="offer-prices">
-          <span class="price-new">$180/سنة</span>
-          <span class="price-old">$200</span>
-          <span class="price-save">شهر مجاني</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">CLAUDEYEAR</span>
-          <button class="copy-btn" data-code="CLAUDEYEAR">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 30 أغسطس 2026</span>
-          <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="midjourney">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#e8a33d">MJ</div>
-          <div class="tool-info"><h3>Midjourney</h3><small>توليد صور AI</small></div>
-          <span class="offer-type discount">خصم</span>
-        </div>
-        <p class="offer-body">اشتراك Standard السنوي بخصم 15% — توليد صور عالية الجودة بدون علامة مائية.</p>
-        <div class="offer-prices">
-          <span class="price-new">$102/سنة</span>
-          <span class="price-old">$120</span>
-          <span class="price-save">وفّر $18</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">MJ15OFF</span>
-          <button class="copy-btn" data-code="MJ15OFF">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 20 أغسطس 2026</span>
-          <a href="https://midjourney.com" target="_blank" rel="noopener">midjourney.com ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="perplexity">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#5fae6e">PX</div>
-          <div class="tool-info"><h3>Perplexity Pro</h3><small>محرك بحث AI</small></div>
-          <span class="offer-type discount">خصم</span>
-        </div>
-        <p class="offer-body">اشتراك Pro السنوي بخصم 25% — بحث AI متقدم مع مصادر موثقة.</p>
-        <div class="offer-prices">
-          <span class="price-new">$150/سنة</span>
-          <span class="price-old">$200</span>
-          <span class="price-save">وفّر $50</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">PERPLEX25</span>
-          <button class="copy-btn" data-code="PERPLEX25">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 25 أغسطس 2026</span>
-          <a href="https://perplexity.ai" target="_blank" rel="noopener">perplexity.ai ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="copilot">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#6b9bd1">GH</div>
-          <div class="tool-info"><h3>GitHub Copilot</h3><small>مساعد برمجة AI</small></div>
-          <span class="offer-type free">مجاني</span>
-        </div>
-        <p class="offer-body">Copilot Free متاح الآن للجميع — إكمال كود AI، دردشة، واقتراحات داخل VS Code.</p>
-        <div class="offer-prices">
-          <span class="price-new">مجاني</span>
-          <span class="price-save">دائم</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">FREE TIER</span>
-          <button class="copy-btn" data-code="https://github.com/features/copilot">رابط GitHub</button>
-        </div>
-        <div class="offer-foot">
-          <span>دائم</span>
-          <a href="https://github.com/features/copilot" target="_blank" rel="noopener">github.com/copilot ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-      <article class="offer" data-tool="windsurf">
-        <div class="offer-head">
-          <div class="tool-logo" style="background:#c2645a">WS</div>
-          <div class="tool-info"><h3>Windsurf</h3><small>محرر كود AI من Codeium</small></div>
-          <span class="offer-type discount">خصم</span>
-        </div>
-        <p class="offer-body">اشتراك Pro السنوي بخصم 30% — محرر كود AI مع Cascade (وكيل برمجة مستقل).</p>
-        <div class="offer-prices">
-          <span class="price-new">$126/سنة</span>
-          <span class="price-old">$180</span>
-          <span class="price-save">وفّر $54</span>
-        </div>
-        <div class="offer-code">
-          <span class="code">WIND30</span>
-          <button class="copy-btn" data-code="WIND30">نسخ</button>
-        </div>
-        <div class="offer-foot">
-          <span>ينتهي: 18 أغسطس 2026</span>
-          <a href="https://codeium.com/windsurf" target="_blank" rel="noopener">codeium.com ↗</a>
-          <span class="verified">✓ مُتحقَّق</span>
-        </div>
-      </article>
-
-    </div>
+  <section class="log-wrap">
+    <p class="log-count"><b id="countShown">0</b> تحديث معروض</p>
+    <div class="log" id="log" aria-live="polite"></div>
+    <p class="log-empty" id="logEmpty" hidden>لا توجد تحديثات مطابقة لهذا الفلتر بعد.</p>
   </section>
 
-  <section class="tools-section">
-    <div class="wrap">
-      <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:8px">الأدوات المميزة</h2>
-      <p style="color:var(--muted);font-size:.9rem">تصفّح العروض حسب الأداة</p>
-      
-      <div class="tools-grid">
-        <div class="tool-card" data-filter="openrouter">
-          <div class="tool-card-head">
-            <div class="tool-logo" style="background:#e8a33d;width:36px;height:36px;font-size:.8rem">OR</div>
-            <h3>OpenRouter</h3>
-          </div>
-          <p>منصة موحدة لـ 400+ نموذج AI</p>
-          <span class="count">1 عرض نشط</span>
-        </div>
-        <div class="tool-card" data-filter="opencode">
-          <div class="tool-card-head">
-            <div class="tool-logo" style="background:#5fae6e;width:36px;height:36px;font-size:.8rem">OC</div>
-            <h3>OpenCode</h3>
-          </div>
-          <p>محرر كود AI مفتوح المصدر</p>
-          <span class="count">1 عرض نشط</span>
-        </div>
-        <div class="tool-card" data-filter="cursor">
-          <div class="tool-card-head">
-            <div class="tool-logo" style="background:#6b9bd1;width:36px;height:36px;font-size:.8rem">CU</div>
-            <h3>Cursor</h3>
-          </div>
-          <p>محرر كود AI متقدم مع Tab و Chat</p>
-          <span class="count">1 عرض نشط</span>
-        </div>
-        <div class="tool-card" data-filter="claude">
-          <div class="tool-card-head">
-            <div class="tool-logo" style="background:#c2645a;width:36px;height:36px;font-size:.8rem">CL</div>
-            <h3>Claude</h3>
-          </div>
-          <p>مساعد AI من Anthropic</p>
-          <span class="count">1 عرض نشط</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="changelog">
-    <div class="changelog-head">
-      <h2>سجل التغييرات الأخير</h2>
-      <a href="#">عرض الكل ←</a>
-    </div>
-    <div class="changelog-list">
-      <div class="cl-entry">
-        <div class="cl-entry-head">
-          <span class="cl-entry-date">22 يوليو 2026</span>
-          <span class="cl-entry-tool">OpenRouter</span>
-          <span class="cl-entry-type release">إصدار</span>
-        </div>
-        <h4>10 عائلات نماذج جديدة خلال 22 يوماً</h4>
-        <p>أضافت OpenRouter عشر عائلات نماذج جديدة: GPT-5.6, Grok 4.5, Kimi K3, وغيرها.</p>
-        <p class="cl-entry-source">المصدر: <a href="https://www.digitalapplied.com" target="_blank" rel="noopener">digitalapplied.com</a> <span class="verified">✓</span></p>
-      </div>
-      <div class="cl-entry">
-        <div class="cl-entry-head">
-          <span class="cl-entry-date">1 يوليو 2026</span>
-          <span class="cl-entry-tool">OpenCode</span>
-          <span class="cl-entry-type release">محطة</span>
-        </div>
-        <h4>تجاوز 160 ألف نجمة على GitHub</h4>
-        <p>تقدمت OpenCode على Cursor و Claude Code في تصنيف LogRocket لأدوات AI للمطورين.</p>
-        <p class="cl-entry-source">المصدر: <a href="https://www.toolsura.com" target="_blank" rel="noopener">toolsura.com</a> <span class="verified">✓</span></p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="newsletter">
-      <div>
-        <h3>لا يفوتك عرض جديد ⚡</h3>
-        <p>نرسل لك أفضل عروض أدوات الذكاء الاصطناعي كل أسبوع — مختصرة، موثقة، وإلغاء الاشتراك بضغطة واحدة.</p>
-      </div>
-      <div>
-        <form class="news-form" id="newsForm">
-          <input type="email" id="newsEmail" placeholder="بريدك الإلكتروني.." required>
-          <button type="submit">اشترك</button>
-        </form>
-        <div class="news-ok" id="newsOk">🎉 تم الاشتراك بنجاح!</div>
-      </div>
+  <section class="add-note">
+    <div class="note-box">
+      <h2>كيف تُضاف التحديثات؟</h2>
+      <p>كل تحديق يُقرأ من <code>data/updates.json</code>. أضِف كائناً جديداً بنفس البنية (الأداة، النوع، التاريخ، قبل/بعد، والمصدر) ليظهر تلقائياً هنا.</p>
     </div>
   </section>
 
@@ -476,84 +69,6 @@ section{padding:70px 0}
   </div>
 </footer>
 
-<div class="toast" id="toast">تم النسخ ✓</div>
-
-<script>
-// الفلاتر
-const filters = document.querySelectorAll('.chip[data-filter]');
-const offers = document.querySelectorAll('.offer');
-const toolCards = document.querySelectorAll('.tool-card[data-filter]');
-
-filters.forEach(chip => {
-  chip.addEventListener('click', () => {
-    filters.forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    const filter = chip.dataset.filter;
-    offers.forEach(offer => {
-      if(filter === 'all' || offer.dataset.tool === filter){
-        offer.classList.remove('hide');
-      } else {
-        offer.classList.add('hide');
-      }
-    });
-  });
-});
-
-toolCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const filter = card.dataset.filter;
-    filters.forEach(c => {
-      c.classList.toggle('active', c.dataset.filter === filter);
-    });
-    offers.forEach(offer => {
-      if(offer.dataset.tool === filter){
-        offer.classList.remove('hide');
-      } else {
-        offer.classList.add('hide');
-      }
-    });
-    document.querySelector('.offers-grid').scrollIntoView({behavior:'smooth',block:'start'});
-  });
-});
-
-// نسخ الأكواد
-const toast = document.getElementById('toast');
-let toastTimer;
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const code = btn.dataset.code;
-    if(code.startsWith('http')){
-      window.open(code, '_blank');
-    } else {
-      navigator.clipboard.writeText(code).then(() => {
-        toast.textContent = `تم نسخ ${code} ✓`;
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
-      });
-    }
-  });
-});
-
-// النشرة البريدية
-document.getElementById('newsForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const email = document.getElementById('newsEmail').value;
-  if(!email.includes('@')){
-    toast.textContent = '⚠ بريد غير صحيح';
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
-    return;
-  }
-  e.target.style.display = 'none';
-  document.getElementById('newsOk').style.display = 'block';
-  toast.textContent = 'تم الاشتراك 🎉';
-  toast.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
-});
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
