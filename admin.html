@@ -20,15 +20,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 .wrap{max-width:900px;margin:0 auto}
 
-/* Header */
 .header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap;gap:12px}
 .header h1{font-size:1.3rem;font-weight:700}
 .header h1 span{color:var(--amber)}
 .header a{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 .header a:hover{color:var(--amber)}
 
-/* Buttons */
-.btn{font-family:var(--mono);font-size:.82rem;padding:9px 18px;border-radius:var(--r);border:1px solid var(--line-soft);background:var(--panel);color:var(--ink);cursor:pointer;transition:.2s;font-weight:600}
+.btn{font-family:var(--mono);font-size:.82rem;padding:9px 18px;border-radius:var(--r);border:1px solid var(--line-soft);background:var(--panel);color:var(--ink);cursor:pointer;transition:.2s;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{border-color:var(--amber);color:var(--amber)}
 .btn-primary{background:var(--amber);color:#1a1002;border-color:var(--amber)}
 .btn-primary:hover{background:#f0b254;color:#1a1002}
@@ -37,13 +35,13 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 .btn-success{color:var(--add);border-color:rgba(95,174,110,.3)}
 .btn-success:hover{background:var(--add);color:#fff}
 
-/* Stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
 .stat{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:14px}
 .stat b{font-family:var(--mono);font-size:1.5rem;color:var(--amber);display:block}
 .stat span{font-size:.75rem;color:var(--muted)}
 
-/* Form */
+.actions{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+
 .form-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:24px}
 .form-card h2{font-size:1.1rem;margin-bottom:16px;color:var(--amber)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
@@ -56,7 +54,6 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 .checkbox-row{display:flex;align-items:center;gap:8px}
 .checkbox-row input[type="checkbox"]{width:18px;height:18px;accent-color:var(--amber)}
 
-/* Entries list */
 .entries-list{display:flex;flex-direction:column;gap:10px}
 .entry-item{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .entry-info{flex:1;min-width:200px}
@@ -65,13 +62,11 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 .entry-meta .tag{padding:2px 8px;border-radius:99px;border:1px solid var(--line-soft)}
 .entry-actions{display:flex;gap:6px}
 
-/* Toast */
-.toast{position:fixed;bottom:20px;right:50%;transform:translateX(50%) translateY(100px);background:var(--add);color:#0a1f0b;padding:12px 24px;border-radius:var(--r);font-family:var(--mono);font-size:.85rem;font-weight:700;opacity:0;transition:.3s;z-index:100}
+.toast{position:fixed;bottom:20px;right:50%;transform:translateX(50%) translateY(100px);background:var(--add);color:#0a1f0b;padding:12px 24px;border-radius:var(--r);font-family:var(--mono);font-size:.85rem;font-weight:700;opacity:0;transition:.3s;z-index:100;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(50%) translateY(0)}
 .toast.error{background:var(--del);color:#fff}
 
-/* Modal */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(4px)}
 .modal.show{display:flex}
 .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
 .modal-content h3{margin-bottom:16px;color:var(--amber)}
@@ -89,7 +84,7 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 <div class="wrap">
   <div class="header">
     <h1>⚡ لوحة تحكم <span>نبض</span></h1>
-    <a href="/" target="_blank">← زيارة الموقع</a>
+    <a href="index.html">← زيارة الموقع</a>
   </div>
 
   <div class="stats">
@@ -98,10 +93,10 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
     <div class="stat"><b id="statVerified">0</b><span>مُتحقَّق منها</span></div>
   </div>
 
-  <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
-    <button class="btn btn-primary" onclick="openForm()"> + إضافة منشور جديد</button>
-    <button class="btn btn-success" onclick="exportJSON()">📥 تصدير JSON</button>
-    <button class="btn" onclick="document.getElementById('importFile').click()">📤 استيراد JSON</button>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="openForm()">➕ إضافة منشور</button>
+    <button class="btn btn-success" onclick="validateAndCopy()">📋 نسخ JSON</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">📤 استيراد</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
   </div>
 
@@ -114,7 +109,6 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
           <div class="form-group">
             <label>المعرّف (ID)</label>
             <input type="text" id="f_id" placeholder="مثال: or-2026-08-new" required>
-            <span class="hint">باللغة الإنجليزية فقط، بدون مسافات</span>
           </div>
           <div class="form-group">
             <label>الأداة (Tool)</label>
@@ -166,7 +160,7 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
             <input type="text" id="f_source_name" placeholder="example.com" required>
           </div>
           <div class="form-group">
-            <label>رابط المصدر</label>
+            <label>رابط المصدر (يجب أن يبدأ بـ https://)</label>
             <input type="url" id="f_source_url" placeholder="https://..." required>
           </div>
         </div>
@@ -193,24 +187,40 @@ code,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 <script>
 let entries = [];
 
+// ===== تنظيف البيانات: إزالة المسافات الزائدة من المفاتيح والقيم (schema-robust) =====
+function normalizeEntry(e) {
+  const o = {};
+  Object.keys(e).forEach(k => {
+    const key = String(k).trim();
+    o[key] = typeof e[k] === 'string' ? e[k].trim() : e[k];
+  });
+  return o;
+}
+
+// ===== تحميل البيانات =====
 async function loadEntries() {
   try {
     const res = await fetch('data/updates.json');
     if (!res.ok) throw new Error('فشل التحميل');
-    entries = await res.json();
-    entries = entries.map(e => {
-      const clean = {};
-      Object.keys(e).forEach(k => clean[k.trim()] = typeof e[k] === 'string' ? e[k].trim() : e[k]);
-      return clean;
-    });
+    const rawData = await res.json();
+    entries = Array.isArray(rawData) ? rawData.map(normalizeEntry) : [];
     render();
   } catch (err) {
-    entries = [];
-    render();
-    showToast(' لم يتم العثور على بيانات — ابدأ بإضافة منشور', 'error');
+    // محاولة الاسترداد من الحفظ المحلي إذا فشل الجلب
+    const local = localStorage.getItem('nabd_admin_draft');
+    if (local) {
+      try { entries = JSON.parse(local).map(normalizeEntry); } catch (e) { entries = []; }
+      render();
+      showToast('⚠️ تم تحميل المسودة المحلية (فشل جلب الملف من الخادم)', 'error');
+    } else {
+      entries = [];
+      render();
+      showToast('⚠️ لم يتم العثور على بيانات. ابدأ بإضافة منشور.', 'error');
+    }
   }
 }
 
+// ===== العرض =====
 function render() {
   document.getElementById('statTotal').textContent = entries.length;
   const tools = new Set(entries.map(e => e.tool));
@@ -218,21 +228,22 @@ function render() {
   document.getElementById('statVerified').textContent = entries.filter(e => e.verified).length;
 
   const dl = document.getElementById('toolsList');
-  dl.innerHTML = [...tools].map(t => `<option value="${t}">`).join('');
+  dl.innerHTML = [...tools].map(t => `<option value="${escapeHtml(t)}">`).join('');
 
   const list = document.getElementById('entriesList');
   if (entries.length === 0) {
-    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;font-family:var(--mono)">لا توجد منشورات بعد. اضغط "إضافة منشور جديد" للبدء.</p>';
+    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;font-family:var(--mono)">لا توجد منشورات. اضغط "إضافة منشور" للبدء.</p>';
     return;
   }
+
   list.innerHTML = entries.map((e, i) => `
     <div class="entry-item">
       <div class="entry-info">
         <h3>${escapeHtml(e.title)}</h3>
         <div class="entry-meta">
           <span class="tag">${escapeHtml(e.tool)}</span>
-          <span class="tag">${e.type}</span>
-          <span>${e.date}</span>
+          <span class="tag">${escapeHtml(e.type)}</span>
+          <span>${escapeHtml(e.date)}</span>
           ${e.verified ? '<span style="color:var(--add)">✓</span>' : ''}
         </div>
       </div>
@@ -249,6 +260,7 @@ function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ===== النموذج =====
 function openForm(entry = null) {
   document.getElementById('formTitle').textContent = entry ? 'تعديل منشور' : 'إضافة منشور جديد';
   document.getElementById('editId').value = entry ? entries.indexOf(entry) : '';
@@ -274,6 +286,14 @@ function closeForm() {
 
 document.getElementById('entryForm').addEventListener('submit', e => {
   e.preventDefault();
+
+  // تحقّق أمني: رابط المصدر يجب أن يبدأ بـ https://
+  const url = document.getElementById('f_source_url').value.trim();
+  if (url && !url.startsWith('https://')) {
+    showToast('❌ رابط المصدر يجب أن يبدأ بـ https://', 'error');
+    return;
+  }
+
   const editIdx = document.getElementById('editId').value;
   const entry = {
     id: document.getElementById('f_id').value.trim(),
@@ -286,7 +306,7 @@ document.getElementById('entryForm').addEventListener('submit', e => {
     diff_after: document.getElementById('f_after').value.trim(),
     body: document.getElementById('f_body').value.trim(),
     source_name: document.getElementById('f_source_name').value.trim(),
-    source_url: document.getElementById('f_source_url').value.trim(),
+    source_url: url,
     verified: document.getElementById('f_verified').checked
   };
 
@@ -313,23 +333,36 @@ function deleteEntry(i) {
   showToast('🗑 تم الحذف');
 }
 
+// ===== الحفظ التلقائي =====
 function autoSave() {
-  localStorage.setItem('nabd_draft', JSON.stringify(entries, null, 2));
+  localStorage.setItem('nabd_admin_draft', JSON.stringify(entries));
 }
 
-function exportJSON() {
-  if (entries.length === 0) { showToast('⚠ لا توجد بيانات للتصدير', 'error'); return; }
-  const json = JSON.stringify(entries, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'updates.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('📥 تم تنزيل updates.json — ارفعه على GitHub في مجلد data/');
+// ===== التحقق والنسخ (الميزة الأهم) =====
+function validateAndCopy() {
+  if (entries.length === 0) {
+    showToast('⚠️ لا توجد بيانات للنسخ', 'error');
+    return;
+  }
+
+  // التحقق الأمني من الروابط
+  for (let i = 0; i < entries.length; i++) {
+    if (!entries[i].source_url || !entries[i].source_url.startsWith('https://')) {
+      showToast(`❌ خطأ أمني: رابط المصدر في "${entries[i].title}" يجب أن يبدأ بـ https://`, 'error');
+      openForm(entries[i]);
+      return;
+    }
+  }
+
+  const jsonStr = JSON.stringify(entries, null, 2);
+  navigator.clipboard.writeText(jsonStr).then(() => {
+    showToast('✅ تم نسخ JSON بنجاح! الصقه الآن في GitHub');
+  }).catch(() => {
+    showToast('❌ فشل النسخ. تأكد من صلاحيات المتصفح.', 'error');
+  });
 }
 
+// ===== الاستيراد =====
 function importJSON(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -337,30 +370,34 @@ function importJSON(event) {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
-      if (!Array.isArray(data)) throw new Error('الملف يجب أن يكون مصفوفة');
+      if (!Array.isArray(data)) throw new Error('الملف يجب أن يكون مصفوفة []');
       if (confirm(`استيراد ${data.length} منشور؟ (سيتم استبدال البيانات الحالية)`)) {
-        entries = data;
+        entries = data.map(normalizeEntry);
         render();
         autoSave();
         showToast('✅ تم الاستيراد بنجاح');
       }
-    } catch (err) { showToast('❌ ملف JSON غير صالح', 'error'); }
+    } catch (err) {
+      showToast('❌ ملف JSON غير صالح', 'error');
+    }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
 
+// ===== Toast =====
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast show' + (type === 'error' ? ' error' : '');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 document.getElementById('formModal').addEventListener('click', e => {
   if (e.target.id === 'formModal') closeForm();
 });
 
+// ===== بدء =====
 loadEntries();
 </script>
 </body>
